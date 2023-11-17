@@ -1,5 +1,7 @@
 /* Components */
+import React from "react";
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import { Providers } from "@/lib/providers";
 import { ColorSchemeScript } from "@mantine/core";
 

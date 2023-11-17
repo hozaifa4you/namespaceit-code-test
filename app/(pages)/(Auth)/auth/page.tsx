@@ -15,6 +15,16 @@ import {
   Container,
 } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { notifications } from "@mantine/notifications";
+
+export interface FormValueType {
+  email: string;
+  name?: string;
+  password: string;
+  confPass?: string;
+  terms?: boolean;
+}
 
 import { GoogleButton } from "@/app/components/Buttons/GoogleButton";
 import { TwitterButton } from "@/app/components/Buttons/TwitterButton";
@@ -23,30 +33,52 @@ const SingUpPage = () => {
   const [type, toggle] = useToggle(["login", "register"]);
   const searchparams = useSearchParams();
 
-  const form = useForm({
+  const form = useForm<FormValueType>({
     initialValues: {
       email: "",
       name: "",
       password: "",
       confPass: "",
-      terms: true,
+      terms: false,
     },
 
     validate: {
-      name: (val) => (!val ? "name is required" : null),
+      name: (val) => (!val && type === "register" ? "name is required" : null),
       email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
       password: (val) =>
-        val.length <= 6
+        val.length <= 5
           ? "Password should include at least 6 characters"
           : null,
       confPass: (val, vals) =>
-        val.length <= 6
+        val && val.length <= 5 && type === "register"
           ? "Password should include at least 6 characters"
           : type === "register" && val !== vals.password
           ? "Passwords did not match"
           : null,
     },
   });
+
+  // NOTE: submit handler
+  const submitHandler = async (values: FormValueType) => {
+    if (type === "register") {
+      // TODO: register
+    } else if (type === "login") {
+      // TODO: login
+      const res = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
+      console.log(res);
+      if (!res?.ok) {
+        notifications.show({
+          message: res?.error,
+          title: "Login Failed",
+          color: "red",
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     if (searchparams.get("type")) {
@@ -56,7 +88,7 @@ const SingUpPage = () => {
         toggle("login");
       }
     }
-  }, [searchparams.get("type")]);
+  }, [searchparams, toggle]);
 
   return (
     <Container p="xl" size="xs" mt={100}>
@@ -71,11 +103,7 @@ const SingUpPage = () => {
 
       <Divider label="Or continue with email" labelPosition="center" my="lg" />
 
-      <form
-        onSubmit={form.onSubmit((values) => {
-          console.log(values);
-        })}
-      >
+      <form onSubmit={form.onSubmit((values) => submitHandler(values))}>
         <Stack>
           {type === "register" && (
             <TextInput
@@ -116,7 +144,7 @@ const SingUpPage = () => {
 
           {type === "register" && (
             <PasswordInput
-              required
+              required={type === "register"}
               label="Password Again"
               placeholder="Confirm password"
               value={form.values.confPass}

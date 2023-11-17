@@ -11,10 +11,11 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        // FIXME: remove
         // console.log("[credentials]", credentials);
         try {
           const { data } = await axios.post(
-            "/api/auth/login",
+            process.env.NEXTAUTH_URL + "api/auth/login",
             { email: credentials?.email, password: credentials?.password },
             { headers: { "Content-Type": "application/json" } }
           );
@@ -22,7 +23,7 @@ export const authOptions: AuthOptions = {
           if (data && data.id) return data;
           else return null;
         } catch (err: any) {
-          console.log("[auth options err]", err.response.data);
+          // console.log("[auth options err]", err.response.data);
           throw new Error(err.response.data.msg);
         }
       },
@@ -49,5 +50,5 @@ export const authOptions: AuthOptions = {
   },
   session: { strategy: "jwt" },
   debug: process.env.NODE_ENV === "development",
-  secret: process.env.JWT_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
 };
