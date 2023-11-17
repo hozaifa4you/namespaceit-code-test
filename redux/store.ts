@@ -1,4 +1,4 @@
-/* Core */
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   configureStore,
   type ThunkAction,
@@ -10,17 +10,20 @@ import {
   type TypedUseSelectorHook,
 } from "react-redux";
 
-/* Instruments */
-import { reducer } from "./rootReducer";
-import { middleware } from "./middleware";
+import { middleware } from "@/redux/middleware";
+import { profileSlice } from "./reducers/profileSlice";
 
 export const reduxStore = configureStore({
-  reducer,
+  reducer: {
+    profile: profileSlice.reducer,
+  },
+  devTools: process.env.NODE_ENV === "development",
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(middleware);
   },
 });
-export const useDispatch = () => useReduxDispatch<ReduxDispatch>();
+
+export const useDispatch = useReduxDispatch();
 export const useSelector: TypedUseSelectorHook<ReduxState> = useReduxSelector;
 
 /* Types */

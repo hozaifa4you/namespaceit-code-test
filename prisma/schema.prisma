@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// enum for user type
+enum UserType {
+  Admin
+  User
+  Developer
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  email     String   @unique
+  username  String   @unique
+  password  String
+  userType  UserType @default(User)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -32,6 +32,8 @@ import {
 import classes from "./Navbar.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+
 import Logo from "./Logo";
 
 const mockdata = [
@@ -164,10 +166,7 @@ const Navbar = () => {
           </Group>
 
           <Group visibleFrom="sm">
-            <Button
-              variant="default"
-              onClick={() => router.push("/auth?type=login")}
-            >
+            <Button variant="default" onClick={() => signIn()}>
               Log in
             </Button>
             <Button onClick={() => router.push("/auth?type=register")}>
@@ -220,10 +219,7 @@ const Navbar = () => {
           <Divider my="sm" />
 
           <Group justify="center" grow pb="xl" px="md">
-            <Button
-              variant="default"
-              onClick={() => router.push("/auth?type=login")}
-            >
+            <Button variant="default" onClick={() => signIn()}>
               Log in
             </Button>
             <Button onClick={() => router.push("/auth?type=register")}>
