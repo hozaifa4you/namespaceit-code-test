@@ -1,24 +1,41 @@
 /* Components */
+import "@mantine/core/styles.css";
 import { Providers } from "@/lib/providers";
+import { ColorSchemeScript } from "@mantine/core";
 
 /* Instruments */
-import styles from "./styles/layout.module.css";
 import "./styles/globals.css";
+import Navbar from "@/app/components/Navbar";
+import { Metadata } from "next";
+
+// FIXME: fix in future;
+export const metadata: Metadata = {
+  title: {
+    template: "%s - NameSpaceIT Shopping Cart",
+    default: "NameSpaceIT Shipping Cart",
+  },
+};
 
 export default function RootLayout(props: React.PropsWithChildren) {
   return (
-    <Providers>
-      <html lang="en">
-        <body>
-          <section className={styles.container}>
+    <html lang="en">
+      <head>
+        <head>
+          <ColorSchemeScript />
+        </head>
+      </head>
+      <body>
+        <Providers>
+          <section>
             {/* TODO: Header Here */}
+            <Navbar />
 
-            <main className={styles.main}>{props.children}</main>
+            <main>{props.children}</main>
 
             {/* TODO: Footer here */}
           </section>
-        </body>
-      </html>
-    </Providers>
+        </Providers>
+      </body>
+    </html>
   );
 }
