@@ -11,8 +11,6 @@ export const GET = async (req: Request) => {
     const user = await prismadb.user.findFirst({
       where: { username },
       include: {
-        order: { include: { user: true, _count: true, orderProduct: true } },
-        product: { include: { creator: true, order: true } },
         _count: true,
       },
     });
@@ -20,7 +18,7 @@ export const GET = async (req: Request) => {
     if (!user)
       return NextResponse.json({ msg: "User not found" }, { status: 401 });
 
-    return NextResponse.json(_.omit(user, ["password", "product", "order"]), {
+    return NextResponse.json(_.omit(user, ["password"]), {
       status: 200,
     });
   } catch (err: any) {

@@ -5,7 +5,7 @@ import { MantineProvider } from "@mantine/core";
 import { SessionProvider } from "next-auth/react";
 
 /* Instruments */
-import { reduxStore } from "@/lib/redux";
+import { reduxStore } from "@/redux/store";
 import { Notifications } from "@mantine/notifications";
 
 export const Providers = (props: React.PropsWithChildren) => {

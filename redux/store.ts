@@ -11,11 +11,11 @@ import {
 } from "react-redux";
 
 import { middleware } from "@/redux/middleware";
-import { profileSlice } from "./reducers/profileSlice";
+import { cartSlice } from "./slices/cartSlice";
 
 export const reduxStore = configureStore({
   reducer: {
-    profile: profileSlice.reducer,
+    cart: cartSlice.reducer,
   },
   devTools: process.env.NODE_ENV === "development",
   middleware: (getDefaultMiddleware) => {
@@ -23,7 +23,7 @@ export const reduxStore = configureStore({
   },
 });
 
-export const useDispatch = useReduxDispatch();
+export const useDispatch = () => useReduxDispatch<ReduxDispatch>();
 export const useSelector: TypedUseSelectorHook<ReduxState> = useReduxSelector;
 
 /* Types */

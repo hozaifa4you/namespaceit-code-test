@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   IconHeart,
   IconStar,
@@ -21,25 +21,14 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import cx from "clsx";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 import classes from "./Navbar.module.css";
-import { userFind } from "@/lib/auth";
-
-const user = {
-  name: "Jane Spoonfighter",
-  email: "janspoon@fighter.dev",
-  image:
-    "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
-};
 
 const UserProfile = () => {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-  // const [user, setUser] = useState<any>(null);
   const theme = useMantineTheme();
   const session = useSession();
-
-  console.log(user);
 
   return (
     <Menu
@@ -58,16 +47,13 @@ const UserProfile = () => {
         >
           <Group gap={7}>
             <Avatar
-              src={
-                user?.image ||
-                "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png"
-              }
-              alt={user.name}
+              src={session.data?.user?.avatar}
+              alt={session.data?.user?.name}
               radius="xl"
               size={20}
             />
             <Text fw={500} size="sm" lh={1} mr={3}>
-              {user.name}
+              {session.data?.user?.name}
             </Text>
             <IconChevronDown
               style={{ width: rem(12), height: rem(12) }}
@@ -133,6 +119,7 @@ const UserProfile = () => {
           Change account
         </Menu.Item>
         <Menu.Item
+          onClick={async () => await signOut()}
           leftSection={
             <IconLogout
               style={{ width: rem(16), height: rem(16) }}

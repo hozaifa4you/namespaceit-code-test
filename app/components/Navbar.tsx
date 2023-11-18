@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import {
   HoverCard,
   Group,
@@ -18,13 +18,11 @@ import {
   ScrollArea,
   rem,
   useMantineTheme,
-  Menu,
-  Avatar,
   ActionIcon,
+  Badge,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconShoppingCart } from "@tabler/icons-react";
-
 import {
   IconNotification,
   IconCode,
@@ -42,6 +40,8 @@ import { signIn, useSession } from "next-auth/react";
 import Logo from "./Logo";
 import UserProfile from "./UserProfile";
 import UserProfileSM from "./UserPrfileSM";
+import { useDispatch, useSelector } from "@/redux/store";
+import { selectCart } from "@/redux/slices/cartSlice";
 
 const mockdata = [
   {
@@ -83,7 +83,10 @@ const Navbar = () => {
   const theme = useMantineTheme();
   const router = useRouter();
   const session = useSession();
-  console.log(session);
+  const dispatch = useDispatch();
+  const { cart, error, status } = useSelector(selectCart);
+
+  console.log(cart);
 
   const links = mockdata.map((item) => (
     <UnstyledButton className={classes.subLink} key={item.title}>
@@ -183,6 +186,13 @@ const Navbar = () => {
                     stroke={1.5}
                   />
                 </ActionIcon>
+                <Badge color="pink" size="xs">
+                  {cart?.reduce(
+                    (accumulator, currentValue) =>
+                      accumulator + currentValue.qty,
+                    0
+                  )}
+                </Badge>
                 <UserProfile />
               </>
             ) : (
