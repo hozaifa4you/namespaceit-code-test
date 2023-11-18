@@ -1,11 +1,12 @@
+"use client";
+import React from "react";
 import { Button } from "@mantine/core";
-import { Metadata } from "next";
-import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "Shop - NameSpaceIT Shopping Cart",
-};
+import { signOut } from "next-auth/react";
 
 export default function IndexPage() {
-  return <Button component="a">Next link button</Button>;
+  return (
+    <Button component="a" onClick={() => signOut()}>
+      Signout
+    </Button>
+  );
 }

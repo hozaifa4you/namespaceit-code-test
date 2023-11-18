@@ -15,12 +15,44 @@ enum UserType {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String?
-  email     String   @unique
-  username  String   @unique
+  id        Int       @id @default(autoincrement())
+  avatar    String?   @default("https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png")
+  name      String
+  email     String    @unique
+  username  String    @unique
   password  String
-  userType  UserType @default(User)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  userType  UserType  @default(User)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  product   Product[]
+  order     Order[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  image       String
+  slug        String
+  description String
+  productCode String?
+  sku         String?
+  price       String
+  category    String
+  quantity    String
+  creator     User     @relation(fields: [userId], references: [id])
+  userId      Int
+  order       Order?   @relation(fields: [orderId], references: [id])
+  orderId     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id           Int       @id @default(autoincrement())
+  slug         String
+  orderProduct Product[]
+  user         User      @relation(fields: [userId], references: [id])
+  userId       Int
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }

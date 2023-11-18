@@ -1,3 +1,4 @@
+import { LoginUser } from "@/types/nextauth";
 import axios from "axios";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -31,16 +32,16 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async jwt({ user, token }) {
-      console.log("[token]", token);
-      console.log("[user]", user);
+      // console.log("[token]", token);
+      // console.log("[user]", user);
 
       return { ...user, ...token };
     },
     async session({ session, token }) {
-      console.log("[session session]", session);
-      console.log("[session token]", token);
+      // console.log("[session session]", session);
+      // console.log("[session token]", token);
 
-      session.user = token;
+      session.user = token as LoginUser;
 
       return session;
     },

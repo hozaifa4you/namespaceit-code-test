@@ -32,7 +32,10 @@ export const POST = async (req: Request) => {
     });
 
     return NextResponse.json(
-      { msg: "Successfully new user created", user: newUser.id },
+      {
+        msg: "Successfully new user created",
+        user: newUser.id,
+      },
       { status: 201 }
     );
   } catch (err: any) {

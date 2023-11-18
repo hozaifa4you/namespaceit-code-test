@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   HoverCard,
   Group,
@@ -18,8 +18,13 @@ import {
   ScrollArea,
   rem,
   useMantineTheme,
+  Menu,
+  Avatar,
+  ActionIcon,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { IconShoppingCart } from "@tabler/icons-react";
+
 import {
   IconNotification,
   IconCode,
@@ -32,9 +37,11 @@ import {
 import classes from "./Navbar.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 import Logo from "./Logo";
+import UserProfile from "./UserProfile";
+import UserProfileSM from "./UserPrfileSM";
 
 const mockdata = [
   {
@@ -75,6 +82,8 @@ const Navbar = () => {
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const theme = useMantineTheme();
   const router = useRouter();
+  const session = useSession();
+  console.log(session);
 
   const links = mockdata.map((item) => (
     <UnstyledButton className={classes.subLink} key={item.title}>
@@ -166,12 +175,26 @@ const Navbar = () => {
           </Group>
 
           <Group visibleFrom="sm">
-            <Button variant="default" onClick={() => signIn()}>
-              Log in
-            </Button>
-            <Button onClick={() => router.push("/auth?type=register")}>
-              Sign up
-            </Button>
+            {session && session.data && session.data.user ? (
+              <>
+                <ActionIcon variant="light" size="lg" aria-label="Settings">
+                  <IconShoppingCart
+                    style={{ width: "70%", height: "70%" }}
+                    stroke={1.5}
+                  />
+                </ActionIcon>
+                <UserProfile />
+              </>
+            ) : (
+              <>
+                <Button variant="default" onClick={() => signIn()}>
+                  Log in
+                </Button>
+                <Button onClick={() => router.push("/auth?type=register")}>
+                  Sign up
+                </Button>
+              </>
+            )}
           </Group>
 
           <Burger
@@ -219,12 +242,20 @@ const Navbar = () => {
           <Divider my="sm" />
 
           <Group justify="center" grow pb="xl" px="md">
-            <Button variant="default" onClick={() => signIn()}>
-              Log in
-            </Button>
-            <Button onClick={() => router.push("/auth?type=register")}>
-              Sign up
-            </Button>
+            {session && session.data && session.data.user ? (
+              <Center inline>
+                <UserProfileSM />
+              </Center>
+            ) : (
+              <>
+                <Button variant="default" onClick={() => signIn()}>
+                  Log in
+                </Button>
+                <Button onClick={() => router.push("/auth?type=register")}>
+                  Sign up
+                </Button>
+              </>
+            )}
           </Group>
         </ScrollArea>
       </Drawer>

@@ -1,28 +1,24 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { z } from "zod";
 import _ from "lodash";
 
 import prismadb from "@/lib/prismadb";
 
-export const POST = async (req: Request) => {
+export const GET = async (req: Request) => {
   try {
-    const { password, email } = z
-      .object({
-        email: z.string().trim(),
-        password: z.string(),
-      })
-      .parse(await req.json());
+    const { searchParams } = new URL(req.url);
+    const username = searchParams.get("username") as string;
 
     const user = await prismadb.user.findFirst({
-      where: { email },
+      where: { username },
+      include: {
+        order: { include: { user: true, _count: true, orderProduct: true } },
+        product: { include: { creator: true, order: true } },
+        _count: true,
+      },
     });
 
     if (!user)
-      return NextResponse.json({ msg: "Invalid credentials" }, { status: 401 });
-
-    if (!(await bcrypt.compare(password, user.password)))
-      return NextResponse.json({ msg: "Invalid credentials" }, { status: 401 });
+      return NextResponse.json({ msg: "User not found" }, { status: 401 });
 
     return NextResponse.json(_.omit(user, ["password", "product", "order"]), {
       status: 200,

@@ -2,7 +2,8 @@
 import React from "react";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
-import { Providers } from "@/lib/providers";
+import "@mantine/tiptap/styles.css";
+import { Providers } from "@/app/components/Providers";
 import { ColorSchemeScript } from "@mantine/core";
 
 /* Instruments */

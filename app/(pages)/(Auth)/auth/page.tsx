@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 "use client";
 import React, { useEffect } from "react";
 import { useToggle } from "@mantine/hooks";
@@ -14,29 +15,33 @@ import {
   Stack,
   Container,
 } from "@mantine/core";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { notifications } from "@mantine/notifications";
+
+import { GoogleButton } from "@/app/components/Buttons/GoogleButton";
+import { TwitterButton } from "@/app/components/Buttons/TwitterButton";
+import { register } from "@/lib/auth";
 
 export interface FormValueType {
   email: string;
   name?: string;
+  username?: string;
   password: string;
   confPass?: string;
   terms?: boolean;
 }
 
-import { GoogleButton } from "@/app/components/Buttons/GoogleButton";
-import { TwitterButton } from "@/app/components/Buttons/TwitterButton";
-
 const SingUpPage = () => {
   const [type, toggle] = useToggle(["login", "register"]);
+  const router = useRouter();
   const searchparams = useSearchParams();
 
   const form = useForm<FormValueType>({
     initialValues: {
       email: "",
       name: "",
+      username: "",
       password: "",
       confPass: "",
       terms: false,
@@ -44,6 +49,8 @@ const SingUpPage = () => {
 
     validate: {
       name: (val) => (!val && type === "register" ? "name is required" : null),
+      username: (val) =>
+        !val && type === "register" ? "username is required" : null,
       email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
       password: (val) =>
         val.length <= 5
@@ -62,6 +69,15 @@ const SingUpPage = () => {
   const submitHandler = async (values: FormValueType) => {
     if (type === "register") {
       // TODO: register
+      const res = await register(values);
+      if (res) {
+        notifications.show({
+          title: "New User Creation",
+          message: res?.msg,
+          color: "green",
+        });
+        router.push("/auth?type=login");
+      }
     } else if (type === "login") {
       // TODO: login
       const res = await signIn("credentials", {
@@ -70,12 +86,14 @@ const SingUpPage = () => {
         redirect: false,
       });
       console.log(res);
-      if (!res?.ok) {
+      if (res && !res?.ok) {
         notifications.show({
           message: res?.error,
           title: "Login Failed",
           color: "red",
         });
+      } else {
+        router.push(searchparams.get("callbackUrl") || "/");
       }
     }
   };
@@ -107,12 +125,25 @@ const SingUpPage = () => {
         <Stack>
           {type === "register" && (
             <TextInput
-              required
+              required={type === "register"}
               label="Name"
               placeholder="Your name"
               value={form.values.name}
               onChange={(event) =>
                 form.setFieldValue("name", event.currentTarget.value)
+              }
+              radius="md"
+            />
+          )}
+
+          {type === "register" && (
+            <TextInput
+              required={type === "register"}
+              label="Username"
+              placeholder="Your username"
+              value={form.values.username}
+              onChange={(event) =>
+                form.setFieldValue("username", event.currentTarget.value)
               }
               radius="md"
             />
