@@ -180,7 +180,12 @@ const Navbar = () => {
           <Group visibleFrom="sm">
             {session && session.data && session.data.user ? (
               <>
-                <ActionIcon variant="light" size="lg" aria-label="Settings">
+                <ActionIcon
+                  variant="light"
+                  size="lg"
+                  aria-label="Settings"
+                  onClick={() => router.push("/product/cart")}
+                >
                   <IconShoppingCart
                     style={{ width: "70%", height: "70%" }}
                     stroke={1.5}

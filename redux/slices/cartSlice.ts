@@ -16,11 +16,12 @@ const cart_info = "cart-info";
 
 // initial state
 const initialState: CartSliceType = {
-  cart: localStorage.getItem(cart_info)
-    ? (JSON.parse(localStorage.getItem(cart_info)!) as [
-        { item: Product; qty: number }
-      ])
-    : null,
+  cart:
+    typeof window !== "undefined" && localStorage.getItem(cart_info)
+      ? (JSON.parse(localStorage.getItem(cart_info)!) as [
+          { item: Product; qty: number }
+        ])
+      : null,
   status: STATUS.IDLE,
   error: null,
 };
@@ -50,7 +51,8 @@ export const cartSlice = createSlice({
       }
 
       // Save the updated cart to local storage
-      localStorage.setItem(cart_info, JSON.stringify(state.cart));
+      typeof window !== "undefined" &&
+        localStorage.setItem(cart_info, JSON.stringify(state.cart));
     },
     // Hello ChatGPT fix there
     // you have to decrease qty one by one if the product already exist
@@ -72,7 +74,8 @@ export const cartSlice = createSlice({
           }
 
           // Save the updated cart to local storage
-          localStorage.setItem(cart_info, JSON.stringify(state.cart));
+          typeof window !== "undefined" &&
+            localStorage.setItem(cart_info, JSON.stringify(state.cart));
         }
       }
     },
@@ -85,12 +88,13 @@ export const cartSlice = createSlice({
         ) as CartSliceType["cart"];
 
         // Save the updated cart to local storage
-        localStorage.setItem(cart_info, JSON.stringify(state.cart));
+        typeof window !== "undefined" &&
+          localStorage.setItem(cart_info, JSON.stringify(state.cart));
       }
     },
     removeCarts: (state) => {
       state.cart = null;
-      localStorage.removeItem(cart_info);
+      typeof window !== "undefined" && localStorage.removeItem(cart_info);
     },
     setStatus: (state, action) => {
       state.status = action.payload;

@@ -1,16 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Container, Grid, Text } from "@mantine/core";
-import { signOut } from "next-auth/react";
+import { Container, Grid, Text } from "@mantine/core";
 import { allProducts } from "@/lib/product";
 import { Product } from "@prisma/client";
 import ProductCard from "../components/ProductCard";
-import { useDispatch, useSelector } from "@/redux/store";
+import { useSelector } from "@/redux/store";
 import { selectCart } from "@/redux/slices/cartSlice";
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[] | null>(null);
-  const dispatch = useDispatch();
   const selector = useSelector(selectCart);
 
   console.log(selector);
