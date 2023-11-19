@@ -40,23 +40,23 @@ import { signIn, useSession } from "next-auth/react";
 import Logo from "./Logo";
 import UserProfile from "./UserProfile";
 import UserProfileSM from "./UserPrfileSM";
-import { useDispatch, useSelector } from "@/redux/store";
+import { useSelector } from "@/redux/store";
 import { selectCart } from "@/redux/slices/cartSlice";
 
 const mockdata = [
   {
     icon: IconCode,
-    title: "Open source",
+    title: "Top Sell",
     description: "This Pokémon’s cry is very loud and distracting",
   },
   {
     icon: IconCoin,
-    title: "Free for everyone",
+    title: "Recent Product",
     description: "The fluid of Smeargle’s tail secretions changes",
   },
   {
     icon: IconBook,
-    title: "Documentation",
+    title: "Trending Product",
     description: "Yanma is capable of seeing 360 degrees without",
   },
   {
@@ -66,12 +66,12 @@ const mockdata = [
   },
   {
     icon: IconChartPie3,
-    title: "Analytics",
+    title: "Computer",
     description: "This Pokémon uses its flying ability to quickly chase",
   },
   {
     icon: IconNotification,
-    title: "Notifications",
+    title: "Food",
     description: "Combusken battles with the intensely hot flames it spews",
   },
 ];
@@ -83,8 +83,7 @@ const Navbar = () => {
   const theme = useMantineTheme();
   const router = useRouter();
   const session = useSession();
-  const dispatch = useDispatch();
-  const { cart, error, status } = useSelector(selectCart);
+  const { cart } = useSelector(selectCart);
 
   console.log(cart);
 

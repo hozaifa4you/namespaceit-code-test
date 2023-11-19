@@ -1,15 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import {
-  IconHeart,
   IconStar,
-  IconMessage,
   IconSettings,
-  IconSwitchHorizontal,
   IconLogout,
-  IconPlayerPause,
-  IconTrash,
   IconChevronDown,
+  IconUserCircle,
+  IconShoppingCartFilled,
+  IconEdit,
 } from "@tabler/icons-react";
 import {
   Avatar,
@@ -65,36 +63,36 @@ const UserProfile = () => {
       <Menu.Dropdown>
         <Menu.Item
           leftSection={
-            <IconHeart
+            <IconUserCircle
               style={{ width: rem(16), height: rem(16) }}
               color={theme.colors.red[6]}
               stroke={1.5}
             />
           }
         >
-          Liked posts
+          Profile
         </Menu.Item>
         <Menu.Item
           leftSection={
-            <IconStar
+            <IconShoppingCartFilled
               style={{ width: rem(16), height: rem(16) }}
               color={theme.colors.yellow[6]}
               stroke={1.5}
             />
           }
         >
-          Saved posts
+          Orders
         </Menu.Item>
         <Menu.Item
           leftSection={
-            <IconMessage
+            <IconStar
               style={{ width: rem(16), height: rem(16) }}
               color={theme.colors.blue[6]}
               stroke={1.5}
             />
           }
         >
-          Your comments
+          Wish List
         </Menu.Item>
 
         <Menu.Label>Settings</Menu.Label>
@@ -110,14 +108,15 @@ const UserProfile = () => {
         </Menu.Item>
         <Menu.Item
           leftSection={
-            <IconSwitchHorizontal
+            <IconEdit
               style={{ width: rem(16), height: rem(16) }}
               stroke={1.5}
             />
           }
         >
-          Change account
+          Edit Profile
         </Menu.Item>
+
         <Menu.Item
           onClick={async () => await signOut()}
           leftSection={
@@ -128,31 +127,6 @@ const UserProfile = () => {
           }
         >
           Logout
-        </Menu.Item>
-
-        <Menu.Divider />
-
-        <Menu.Label>Danger zone</Menu.Label>
-        <Menu.Item
-          leftSection={
-            <IconPlayerPause
-              style={{ width: rem(16), height: rem(16) }}
-              stroke={1.5}
-            />
-          }
-        >
-          Pause subscription
-        </Menu.Item>
-        <Menu.Item
-          color="red"
-          leftSection={
-            <IconTrash
-              style={{ width: rem(16), height: rem(16) }}
-              stroke={1.5}
-            />
-          }
-        >
-          Delete account
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>

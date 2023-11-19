@@ -17,11 +17,10 @@ import { useDispatch, useSelector } from "@/redux/store";
 import { cartSlice, selectCart } from "@/redux/slices/cartSlice";
 import {
   PaymentMethod,
+  createOrderReducer,
   orderSlice,
   selectOrder,
 } from "@/redux/slices/orderSlice";
-import { notifications } from "@mantine/notifications";
-import axios from "axios";
 
 interface PropTypes {
   setCartType: Dispatch<SetStateAction<CartType>>;
@@ -55,36 +54,6 @@ const PaymentInfo = ({ setCartType, setStepper }: PropTypes) => {
   );
   const grandTotal = total! + 100;
 
-  const handleOrder = async () => {
-    try {
-      const { data } = await axios.post(
-        "/api/order/create",
-        {
-          orderId: order?.orderId,
-          orderProducts: order?.orderProducts,
-          totalPayment: order?.totalPayment,
-          totalProduct: order?.totalProduct,
-          deliveryCharge: order?.deliveryCharge,
-          address: {
-            addressLine1: order?.shippingInfo?.address?.addressLine1,
-            city: order?.shippingInfo?.address?.city,
-            division: order?.shippingInfo?.address?.division,
-            zip: order?.shippingInfo?.address?.zip,
-            addressLine2: order?.shippingInfo?.address?.addressLine2,
-          },
-        },
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      notifications.show({ title: "Order creation", message: data.msg });
-    } catch (err: any) {
-      notifications.show({
-        title: "Order Creation Failed",
-        message: err.response.data.msg || err.message,
-      });
-    }
-  };
-
   return (
     <Container size="xs">
       <Text size="lg" fw={700} ta="center" my={15}>
@@ -109,8 +78,8 @@ const PaymentInfo = ({ setCartType, setStepper }: PropTypes) => {
             value="cashOnDelivery"
             label="Cash On Delivery"
             name="paymentType"
-            checked={paymentType === "Cash On Delivery"}
-            onClick={() => setPaymentType("Cash On Delivery")}
+            checked={paymentType === "CashOnDelivery"}
+            onClick={() => setPaymentType("CashOnDelivery")}
           />
         </Group>
       </Radio.Group>
@@ -259,17 +228,20 @@ const PaymentInfo = ({ setCartType, setStepper }: PropTypes) => {
           </Text>
           <Flex justify="flex-end" align="center">
             <Button
-              onClick={() => {
-                dispatch(
-                  orderSlice.actions.setPayment({
-                    paymentMethod: paymentType,
-                    isPaid: paymentType === "Cash On Delivery" ? false : true,
-                    totalPayment: grandTotal,
-                  })
+              onClick={async () => {
+                await dispatch(
+                  createOrderReducer(
+                    order?.orderId as string,
+                    order?.orderProducts as object,
+                    grandTotal,
+                    order?.totalProduct as number,
+                    order?.deliveryCharge as number,
+                    order?.shippingInfo?.address as any,
+                    paymentType,
+                    paymentType === "CashOnDelivery" ? false : true
+                  )
                 );
 
-                // api request
-                handleOrder();
                 setCartType("Complete"), setStepper(4);
                 dispatch(orderSlice.actions.removeOrder());
                 dispatch(cartSlice.actions.removeCarts());

@@ -1,10 +1,13 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+/* eslint-disable indent */
+import { createSlice, Dispatch, type PayloadAction } from "@reduxjs/toolkit";
 
 import { STATUS } from "@/redux/status";
 import { ReduxState } from "../store";
 import { Product, OrderStatus } from "@prisma/client";
+import axios from "axios";
+import { notifications } from "@mantine/notifications";
 
-export type PaymentMethod = "Card" | "Cash On Delivery";
+export type PaymentMethod = "Card" | "CashOnDelivery";
 
 interface OrderCart {
   orderId?: string;
@@ -35,6 +38,7 @@ export interface OrderSliceType {
   order: OrderCart | null;
   status: STATUS;
   error: null;
+  orderComplete: boolean;
 }
 
 // initial state
@@ -42,6 +46,7 @@ const initialState: OrderSliceType = {
   order: null,
   status: STATUS.IDLE,
   error: null,
+  orderComplete: false,
 };
 
 export const orderSlice = createSlice({
@@ -134,7 +139,71 @@ export const orderSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
+    setComplete: (state) => {
+      state.orderComplete = true;
+    },
   },
 });
+
+// interface OrderRequestType {
+//   orderId: string;
+//   orderProducts: object;
+//   totalPayment: number;
+//   totalProduct: number;
+//   deliveryCharge: number;
+//   address: {
+//     addressLine1: string;
+//     city: string;
+//     division: string;
+//     zip: number;
+//     addressLine2?: string;
+//   };
+// }
+
+export const createOrderReducer =
+  (
+    orderId: string,
+    orderProducts: object,
+    totalPayment: number,
+    totalProduct: number,
+    deliveryCharge: number,
+    address: any,
+    paymentMethod: PaymentMethod,
+    isPaid: boolean
+  ) =>
+  async (dispatch: Dispatch) => {
+    dispatch(setStatus(STATUS.LOADING));
+    try {
+      dispatch(setPayment({ isPaid, paymentMethod, totalPayment }));
+      const { data } = await axios.post<{ msg: string; success: boolean }>(
+        "/api/order/create",
+        {
+          orderId,
+          orderProducts,
+          totalPayment,
+          totalProduct,
+          deliveryCharge,
+          address,
+        },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      notifications.show({
+        title: "Order Creation",
+        message: data.msg,
+        color: "green",
+      });
+
+      dispatch(setStatus(STATUS.IDLE));
+    } catch (err: any) {
+      dispatch(setStatus(STATUS.FAILED));
+      const err_message: string =
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message;
+      dispatch(setError(err_message));
+    }
+  };
+
+const { setPayment, setStatus, setError } = orderSlice.actions;
 
 export const selectOrder = (state: ReduxState) => state.order;

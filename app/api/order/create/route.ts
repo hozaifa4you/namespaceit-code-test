@@ -19,6 +19,8 @@ export const POST = async (req: Request) => {
       totalProduct,
       deliveryCharge,
       address,
+      isPaid,
+      paymentMethod,
     } = await req.json();
 
     const addressCreate = await prismadb.address.create({
@@ -51,11 +53,13 @@ export const POST = async (req: Request) => {
         orderStatus: "Processing",
         userId: session.user.id,
         shippingInfoId: shippingInfoCreate.id,
+        paymentMethod,
+        isPaid,
       },
     });
 
     return NextResponse.json(
-      { msg: "Order created successfully - " + order.id },
+      { msg: "Order created successfully - " + order.id, success: true },
       { status: 200 }
     );
   } catch (err: any) {
