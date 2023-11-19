@@ -15,9 +15,10 @@ import {
   selectCart,
   decreaseCardQtyReducer,
   increaseCardQtyReducer,
+  removeCartReducer,
 } from "@/redux/slices/cartSlice";
 // import classes from "./styles/CartTable.module.css";
-import { IconEye, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconEye, IconMinus, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { CartType } from "../(pages)/product/cart/page";
 import { orderSlice } from "@/redux/slices/orderSlice";
@@ -69,7 +70,7 @@ export default function CartTable({ setCartType, setStepper }: PropTypes) {
               aria-label="Settings"
               onClick={() => dispatch(decreaseCardQtyReducer(cartItem.item.id))}
             >
-              <IconPlus style={{ width: "70%", height: "70%" }} stroke={1.5} />
+              <IconMinus style={{ width: "70%", height: "70%" }} stroke={1.5} />
             </ActionIcon>
             <Text size="md" fw={500}>
               x{cartItem.qty}
@@ -103,6 +104,7 @@ export default function CartTable({ setCartType, setStepper }: PropTypes) {
             radius="xs"
             aria-label="Settings"
             color="pink"
+            onClick={() => dispatch(removeCartReducer(cartItem.item.id))}
           >
             <IconTrash style={{ width: "70%", height: "70%" }} stroke={1.5} />
           </ActionIcon>

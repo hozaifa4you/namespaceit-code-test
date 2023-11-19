@@ -38,30 +38,20 @@ model User {
 }
 
 model Product {
-  id           Int            @id @default(autoincrement())
-  name         String
-  image        String
-  slug         String
-  description  String
-  productCode  String?
-  sku          String?
-  price        String
-  category     String
-  quantity     String
-  creator      User           @relation(fields: [userId], references: [id])
-  userId       Int
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  orderProduct OrderProduct[]
-}
-
-model OrderProduct {
-  id        Int     @id @default(autoincrement())
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int
-  qty       Int
-  Order     Order?  @relation(fields: [orderId], references: [id])
-  orderId   Int?
+  id          Int      @id @default(autoincrement())
+  name        String
+  image       String
+  slug        String
+  description String
+  productCode String?
+  sku         String?
+  price       String
+  category    String
+  quantity    String
+  creator     User     @relation(fields: [userId], references: [id])
+  userId      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Address {
@@ -86,19 +76,19 @@ model ShippingInfo {
 }
 
 model Order {
-  id             Int            @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   orderId        String
   slug           String
-  orderProducts  OrderProduct[]
+  orderProducts  Json
   totalPayment   Float
   totalProduct   Int
   deliveryCharge Float
-  orderStatus    OrderStatus    @default(Processing)
-  shippingInfo   ShippingInfo   @relation(fields: [shippingInfoId], references: [id])
-  user           User           @relation(fields: [userId], references: [id])
+  orderStatus    OrderStatus  @default(Processing)
+  shippingInfo   ShippingInfo @relation(fields: [shippingInfoId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
   userId         Int
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  orderProductId Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
   shippingInfoId Int
 }

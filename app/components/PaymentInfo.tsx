@@ -15,7 +15,13 @@ import { useForm } from "@mantine/form";
 import { CartType } from "../(pages)/product/cart/page";
 import { useDispatch, useSelector } from "@/redux/store";
 import { cartSlice, selectCart } from "@/redux/slices/cartSlice";
-import { PaymentMethod, orderSlice } from "@/redux/slices/orderSlice";
+import {
+  PaymentMethod,
+  orderSlice,
+  selectOrder,
+} from "@/redux/slices/orderSlice";
+import { notifications } from "@mantine/notifications";
+import axios from "axios";
 
 interface PropTypes {
   setCartType: Dispatch<SetStateAction<CartType>>;
@@ -25,6 +31,7 @@ interface PropTypes {
 const PaymentInfo = ({ setCartType, setStepper }: PropTypes) => {
   const dispatch = useDispatch();
   const { cart } = useSelector(selectCart);
+  const { order } = useSelector(selectOrder);
   const [paymentType, setPaymentType] = useState<PaymentMethod>("Card");
 
   const form = useForm({
@@ -47,6 +54,36 @@ const PaymentInfo = ({ setCartType, setStepper }: PropTypes) => {
     0
   );
   const grandTotal = total! + 100;
+
+  const handleOrder = async () => {
+    try {
+      const { data } = await axios.post(
+        "/api/order/create",
+        {
+          orderId: order?.orderId,
+          orderProducts: order?.orderProducts,
+          totalPayment: order?.totalPayment,
+          totalProduct: order?.totalProduct,
+          deliveryCharge: order?.deliveryCharge,
+          address: {
+            addressLine1: order?.shippingInfo?.address?.addressLine1,
+            city: order?.shippingInfo?.address?.city,
+            division: order?.shippingInfo?.address?.division,
+            zip: order?.shippingInfo?.address?.zip,
+            addressLine2: order?.shippingInfo?.address?.addressLine2,
+          },
+        },
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      notifications.show({ title: "Order creation", message: data.msg });
+    } catch (err: any) {
+      notifications.show({
+        title: "Order Creation Failed",
+        message: err.response.data.msg || err.message,
+      });
+    }
+  };
 
   return (
     <Container size="xs">
@@ -230,6 +267,9 @@ const PaymentInfo = ({ setCartType, setStepper }: PropTypes) => {
                     totalPayment: grandTotal,
                   })
                 );
+
+                // api request
+                handleOrder();
                 setCartType("Complete"), setStepper(4);
                 dispatch(orderSlice.actions.removeOrder());
                 dispatch(cartSlice.actions.removeCarts());
