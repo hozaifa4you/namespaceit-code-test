@@ -10,9 +10,10 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { CartType } from "../(pages)/product/cart/page";
 
 interface PropTypes {
-  setCartType: Dispatch<SetStateAction<"Cart" | "Shipping" | "Payment">>;
+  setCartType: Dispatch<SetStateAction<CartType>>;
   setStepper: Dispatch<SetStateAction<number>>;
 }
 
@@ -136,7 +137,7 @@ const ShippingAddress = ({ setCartType, setStepper }: PropTypes) => {
             <Flex justify="flex-end" align="center">
               <Button
                 onClick={() => {
-                  setCartType("Payment"), setStepper(3);
+                  setCartType("OrderInfo"), setStepper(3);
                 }}
               >
                 Payment

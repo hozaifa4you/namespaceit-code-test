@@ -1,15 +1,28 @@
 "use client";
 import React, { Dispatch, SetStateAction } from "react";
-import { Table, Anchor, Text, ActionIcon, Image, Button } from "@mantine/core";
+import {
+  Table,
+  Anchor,
+  Text,
+  ActionIcon,
+  Image,
+  Button,
+  Flex,
+} from "@mantine/core";
 
 import { useDispatch, useSelector } from "@/redux/store";
-import { selectCart } from "@/redux/slices/cartSlice";
+import {
+  selectCart,
+  decreaseCardQtyReducer,
+  increaseCardQtyReducer,
+} from "@/redux/slices/cartSlice";
 // import classes from "./styles/CartTable.module.css";
-import { IconEye, IconTrash } from "@tabler/icons-react";
+import { IconEye, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import { CartType } from "../(pages)/product/cart/page";
 
 interface PropTypes {
-  setCartType: Dispatch<SetStateAction<"Cart" | "Shipping" | "Payment">>;
+  setCartType: Dispatch<SetStateAction<CartType>>;
   setStepper: Dispatch<SetStateAction<number>>;
 }
 
@@ -39,9 +52,28 @@ export default function CartTable({ setCartType, setStepper }: PropTypes) {
         </Table.Td>
         <Table.Td>{cartItem.item.price}Tk</Table.Td>
         <Table.Td>
-          <Anchor component="button" fz="sm">
-            *{cartItem.qty}
-          </Anchor>
+          <Flex align="center" gap={10}>
+            <ActionIcon
+              color="pink"
+              variant="outline"
+              size="xs"
+              aria-label="Settings"
+              onClick={() => dispatch(decreaseCardQtyReducer(cartItem.item.id))}
+            >
+              <IconPlus style={{ width: "70%", height: "70%" }} stroke={1.5} />
+            </ActionIcon>
+            <Text size="md" fw={500}>
+              x{cartItem.qty}
+            </Text>
+            <ActionIcon
+              variant="outline"
+              size="xs"
+              aria-label="Settings"
+              onClick={() => dispatch(increaseCardQtyReducer(cartItem.item.id))}
+            >
+              <IconPlus style={{ width: "70%", height: "70%" }} stroke={1.5} />
+            </ActionIcon>
+          </Flex>
         </Table.Td>
         <Table.Td>
           {Number(cartItem.item.price) * Number(cartItem.qty)}Tk
@@ -119,23 +151,34 @@ export default function CartTable({ setCartType, setStepper }: PropTypes) {
   );
 
   return (
-    <Table.ScrollContainer minWidth={800}>
-      <Table verticalSpacing="xs">
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Image</Table.Th>
-            <Table.Th>Product</Table.Th>
-            <Table.Th>Price</Table.Th>
-            <Table.Th>Qty</Table.Th>
-            <Table.Th>Total Price</Table.Th>
-            <Table.Th>Actions</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {rows}
-          {totalRow}
-        </Table.Tbody>
-      </Table>
-    </Table.ScrollContainer>
+    <>
+      {!cart || !cart.length ? (
+        <Flex justify="space-around" align="center">
+          <Text>Your cart is empty, Please some product in your cart</Text>
+          <Button variant="light" onClick={() => router.push("/")}>
+            Shopping
+          </Button>
+        </Flex>
+      ) : (
+        <Table.ScrollContainer minWidth={800}>
+          <Table verticalSpacing="xs">
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Image</Table.Th>
+                <Table.Th>Product</Table.Th>
+                <Table.Th>Price</Table.Th>
+                <Table.Th>Qty</Table.Th>
+                <Table.Th>Total Price</Table.Th>
+                <Table.Th>Actions</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {rows}
+              {totalRow}
+            </Table.Tbody>
+          </Table>
+        </Table.ScrollContainer>
+      )}
+    </>
   );
 }

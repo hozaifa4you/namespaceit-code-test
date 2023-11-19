@@ -15,6 +15,10 @@ const CustomStepper = ({ active }: { active: number }) => {
       ></Stepper.Step>
       <Stepper.Step
         label="Forth step"
+        description="Order Information"
+      ></Stepper.Step>
+      <Stepper.Step
+        label="Final Step"
         description="Payment Complete"
       ></Stepper.Step>
       <Stepper.Completed>You Order Success Fully completed</Stepper.Completed>
