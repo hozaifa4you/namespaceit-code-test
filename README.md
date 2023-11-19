@@ -1,5 +1,8 @@
 ## Coding Test for 'Full Stack Development' in NameSpaceIT
 
+I tried to do better in this project. I used in this project `NextJs14`, `MySQL`, `Prisma`, `MantineUI`, `ReduxJS`, `@redux/toolkits`, `next-auth`, `zod`, `lodash` etc.
+Hope you will accept.
+
 ### Screenshots
 
 #### Home Page
