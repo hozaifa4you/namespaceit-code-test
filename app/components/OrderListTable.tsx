@@ -12,7 +12,6 @@ import {
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import axios from "axios";
-import { Order } from "@prisma/client";
 import { IconEye, IconTrash } from "@tabler/icons-react";
 
 export default function UserOrdersListTable() {
