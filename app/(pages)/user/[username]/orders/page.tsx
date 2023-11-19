@@ -1,16 +1,10 @@
 "use client";
-import UserOrdersListTable from "@/app/components/OrderListTable";
-import { Container, Text } from "@mantine/core";
-import { useSession } from "next-auth/react";
 import React from "react";
+import { Container, Text } from "@mantine/core";
 
-const UserOrdersList = ({
-  params: { username },
-}: {
-  params: { username: string };
-}) => {
-  const session = useSession();
+import UserOrdersListTable from "@/app/components/OrderListTable";
 
+const UserOrdersList = () => {
   return (
     <Container size="lg" mt={25}>
       <Text ta="center" fw={900} size="lg">

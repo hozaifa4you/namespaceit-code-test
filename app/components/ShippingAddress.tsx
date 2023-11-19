@@ -12,8 +12,7 @@ import {
 import { useForm } from "@mantine/form";
 
 import { CartType } from "../(pages)/product/cart/page";
-import { useDispatch, useSelector } from "@/redux/store";
-import { selectCart } from "@/redux/slices/cartSlice";
+import { useDispatch } from "@/redux/store";
 import { useSession } from "next-auth/react";
 import { orderSlice } from "@/redux/slices/orderSlice";
 
@@ -24,7 +23,6 @@ interface PropTypes {
 
 const ShippingAddress = ({ setCartType, setStepper }: PropTypes) => {
   const dispatch = useDispatch();
-  const { cart } = useSelector(selectCart);
   const session = useSession();
 
   const form = useForm({
