@@ -1,20 +1,42 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Container, Text } from "@mantine/core";
 
 import CartTable from "@/app/components/CartTable";
 import CustomStepper from "@/app/components/Stepper";
+import ShippingAddress from "@/app/components/ShippingAddress";
+import PaymentInfo from "@/app/components/PaymentInfo";
 
 const CartPage = () => {
+  const [cartType, setCartType] = useState<"Cart" | "Shipping" | "Payment">(
+    "Cart"
+  );
+  const [stepper, setStepper] = useState(1);
+
   return (
     <Container size="md" mt={15}>
-      <CustomStepper active={1} />
+      <CustomStepper active={stepper} />
 
       <Text size="xl" fw={900} my={20}>
-        Your Cart
+        Your{" "}
+        {cartType === "Cart"
+          ? "Cart"
+          : cartType === "Shipping"
+          ? "Shipping Info"
+          : cartType === "Payment"
+          ? "Payment Info"
+          : null}
       </Text>
 
-      <CartTable />
+      {cartType === "Cart" && (
+        <CartTable setCartType={setCartType} setStepper={setStepper} />
+      )}
+      {cartType === "Shipping" && (
+        <ShippingAddress setCartType={setCartType} setStepper={setStepper} />
+      )}
+      {cartType === "Payment" && (
+        <PaymentInfo setCartType={setCartType} setStepper={setStepper} />
+      )}
     </Container>
   );
 };

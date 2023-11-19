@@ -1,33 +1,23 @@
 "use client";
-import React from "react";
-import {
-  Table,
-  Progress,
-  Anchor,
-  Text,
-  Group,
-  Button,
-  ActionIcon,
-  Image,
-} from "@mantine/core";
+import React, { Dispatch, SetStateAction } from "react";
+import { Table, Anchor, Text, ActionIcon, Image, Button } from "@mantine/core";
 
 import { useDispatch, useSelector } from "@/redux/store";
 import { selectCart } from "@/redux/slices/cartSlice";
-import classes from "./styles/CartTable.module.css";
+// import classes from "./styles/CartTable.module.css";
 import { IconEye, IconTrash } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
-const data = [
-  {
-    title: "Foundation",
-    author: "Isaac Asimov",
-    year: 1951,
-    reviews: { positive: 2223, negative: 259 },
-  },
-];
+interface PropTypes {
+  setCartType: Dispatch<SetStateAction<"Cart" | "Shipping" | "Payment">>;
+  setStepper: Dispatch<SetStateAction<number>>;
+}
 
-export default function CartTable() {
+export default function CartTable({ setCartType, setStepper }: PropTypes) {
   const dispatch = useDispatch();
   const { cart } = useSelector(selectCart);
+  const router = useRouter();
+
   const rows = cart?.map((cartItem, i) => {
     return (
       <Table.Tr key={i}>
@@ -81,26 +71,51 @@ export default function CartTable() {
   });
 
   const totalRow = (
-    <Table.Tr>
-      <Table.Td></Table.Td>
-      <Table.Td></Table.Td>
-      <Table.Td></Table.Td>
-      <Table.Td></Table.Td>
-      <Table.Td>
-        <Text size="sm" fw={700}>
-          Grand Total
-        </Text>
-      </Table.Td>
-      <Table.Td>
-        <Text size="sm" fw={700}>
-          {cart?.reduce(
-            (acc, cur) => acc + Number(cur.item.price) * cur.qty,
-            0
-          )}
-          TK
-        </Text>
-      </Table.Td>
-    </Table.Tr>
+    <>
+      <Table.Tr>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td>
+          <Text size="sm" fw={700}>
+            Grand Total
+          </Text>
+        </Table.Td>
+        <Table.Td>
+          <Text size="sm" fw={700}>
+            {cart?.reduce(
+              (acc, cur) => acc + Number(cur.item.price) * cur.qty,
+              0
+            )}
+            TK
+          </Text>
+        </Table.Td>
+      </Table.Tr>
+
+      <Table.Tr>
+        <Table.Td>
+          <Button variant="light" color="red" onClick={() => router.push("/")}>
+            Back
+          </Button>
+        </Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td>
+          <Button
+            variant="light"
+            ml={10}
+            onClick={() => {
+              setStepper(2), setCartType("Shipping");
+            }}
+          >
+            Continue
+          </Button>
+        </Table.Td>
+      </Table.Tr>
+    </>
   );
 
   return (

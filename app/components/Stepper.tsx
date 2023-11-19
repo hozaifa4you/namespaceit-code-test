@@ -10,8 +10,12 @@ const CustomStepper = ({ active }: { active: number }) => {
         description="Your Cart Preview"
       ></Stepper.Step>
       <Stepper.Step
-        label="Final step"
+        label="Third step"
         description="Shipping Address"
+      ></Stepper.Step>
+      <Stepper.Step
+        label="Forth step"
+        description="Payment Complete"
       ></Stepper.Step>
       <Stepper.Completed>You Order Success Fully completed</Stepper.Completed>
     </Stepper>
