@@ -14,5 +14,4 @@
 4. New Order `/api/order/create`
 7. Get one product (Product ID) `/api/product/single-product/[productId]`
 8. User get own orders `/api/user/order`
-9. User get self `/api/user?username=`
-10. 
+9. User get self `/api/user?username=` 
