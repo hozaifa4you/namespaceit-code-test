@@ -14,45 +14,88 @@ enum UserType {
   Developer
 }
 
+enum OrderStatus {
+  Processing
+  Shipping
+  Delivered
+  Cancel
+  DeliveryFailed
+}
+
 model User {
-  id        Int       @id @default(autoincrement())
-  avatar    String?   @default("https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png")
-  name      String
-  email     String    @unique
-  username  String    @unique
-  password  String
-  userType  UserType  @default(User)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  product   Product[]
-  order     Order[]
+  id           Int            @id @default(autoincrement())
+  avatar       String?        @default("https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png")
+  name         String
+  email        String         @unique
+  username     String         @unique
+  password     String
+  userType     UserType       @default(User)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  product      Product[]
+  order        Order[]
+  ShippingInfo ShippingInfo[]
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  image       String
-  slug        String
-  description String
-  productCode String?
-  sku         String?
-  price       String
-  category    String
-  quantity    String
-  creator     User     @relation(fields: [userId], references: [id])
-  userId      Int
-  order       Order?   @relation(fields: [orderId], references: [id])
-  orderId     Int?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int            @id @default(autoincrement())
+  name         String
+  image        String
+  slug         String
+  description  String
+  productCode  String?
+  sku          String?
+  price        String
+  category     String
+  quantity     String
+  creator      User           @relation(fields: [userId], references: [id])
+  userId       Int
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  orderProduct OrderProduct[]
+}
+
+model OrderProduct {
+  id        Int     @id @default(autoincrement())
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  qty       Int
+  Order     Order?  @relation(fields: [orderId], references: [id])
+  orderId   Int?
+}
+
+model Address {
+  id           Int            @id @default(autoincrement())
+  name         String
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  division     String
+  country      String
+  zip          Int
+  ShippingInfo ShippingInfo[]
+}
+
+model ShippingInfo {
+  id        Int     @id @default(autoincrement())
+  user      User    @relation(fields: [userId], references: [id])
+  address   Address @relation(fields: [addressId], references: [id])
+  userId    Int
+  addressId Int
 }
 
 model Order {
-  id           Int       @id @default(autoincrement())
-  slug         String
-  orderProduct Product[]
-  user         User      @relation(fields: [userId], references: [id])
-  userId       Int
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id             Int            @id @default(autoincrement())
+  orderId        String
+  slug           String
+  odrProduct     OrderProduct[]
+  totalPayment   Float
+  totalProduct   Int
+  deliveryCharge Float
+  orderStatus    OrderStatus    @default(Processing)
+  user           User           @relation(fields: [userId], references: [id])
+  userId         Int
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  orderProductId Int
 }
