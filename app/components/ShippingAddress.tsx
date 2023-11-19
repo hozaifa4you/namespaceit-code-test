@@ -10,7 +10,12 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+
 import { CartType } from "../(pages)/product/cart/page";
+import { useDispatch, useSelector } from "@/redux/store";
+import { selectCart } from "@/redux/slices/cartSlice";
+import { useSession } from "next-auth/react";
+import { orderSlice } from "@/redux/slices/orderSlice";
 
 interface PropTypes {
   setCartType: Dispatch<SetStateAction<CartType>>;
@@ -18,6 +23,10 @@ interface PropTypes {
 }
 
 const ShippingAddress = ({ setCartType, setStepper }: PropTypes) => {
+  const dispatch = useDispatch();
+  const { cart } = useSelector(selectCart);
+  const session = useSession();
+
   const form = useForm({
     initialValues: {
       firstName: "",
@@ -28,8 +37,11 @@ const ShippingAddress = ({ setCartType, setStepper }: PropTypes) => {
       division: "",
       zip: "",
       country: "Bangladesh",
+      phone: "",
     },
   });
+
+  console.log(form.values);
 
   return (
     <Container size="xs">
@@ -63,14 +75,15 @@ const ShippingAddress = ({ setCartType, setStepper }: PropTypes) => {
               radius="md"
             />
           </GridCol>
+
           <GridCol span={12}>
             <TextInput
               required
-              label="Address Line 1"
-              placeholder="Your address line 1"
-              value={form.values.addressLine1}
+              label="Phone Number"
+              placeholder="Your phone number"
+              value={form.values.phone}
               onChange={(event) =>
-                form.setFieldValue("addressLine1", event.currentTarget.value)
+                form.setFieldValue("phone", event.currentTarget.value)
               }
               radius="md"
             />
@@ -82,6 +95,18 @@ const ShippingAddress = ({ setCartType, setStepper }: PropTypes) => {
               value={form.values.addressLine2}
               onChange={(event) =>
                 form.setFieldValue("addressLine2", event.currentTarget.value)
+              }
+              radius="md"
+            />
+          </GridCol>
+          <GridCol span={12}>
+            <TextInput
+              required
+              label="Address Line 1"
+              placeholder="Your address line 1"
+              value={form.values.addressLine1}
+              onChange={(event) =>
+                form.setFieldValue("addressLine1", event.currentTarget.value)
               }
               radius="md"
             />
@@ -136,8 +161,31 @@ const ShippingAddress = ({ setCartType, setStepper }: PropTypes) => {
           <GridCol span={12}>
             <Flex justify="flex-end" align="center">
               <Button
+                disabled={
+                  !form.values.firstName ||
+                  !form.values.lastName ||
+                  !form.values.addressLine1 ||
+                  !form.values.city ||
+                  !form.values.country ||
+                  !form.values.division ||
+                  !form.values.zip ||
+                  !form.values.phone
+                }
                 onClick={() => {
-                  setCartType("OrderInfo"), setStepper(3);
+                  dispatch(
+                    orderSlice.actions.setShipping({
+                      addressLine1: form.values.addressLine1,
+                      city: form.values.city,
+                      country: form.values.country,
+                      division: form.values.division,
+                      name: session?.data?.user?.name as string,
+                      phone: form.values.phone,
+                      userId: session.data?.user?.id as number,
+                      zip: form.values.zip,
+                      addressLine2: form.values.addressLine2,
+                    })
+                  );
+                  setCartType("Payment"), setStepper(3);
                 }}
               >
                 Payment

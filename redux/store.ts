@@ -12,10 +12,12 @@ import {
 
 import { middleware } from "@/redux/middleware";
 import { cartSlice } from "./slices/cartSlice";
+import { orderSlice } from "./slices/orderSlice";
 
 export const reduxStore = configureStore({
   reducer: {
     cart: cartSlice.reducer,
+    order: orderSlice.reducer,
   },
   devTools: process.env.NODE_ENV === "development",
   middleware: (getDefaultMiddleware) => {

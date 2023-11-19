@@ -20,6 +20,8 @@ import {
 import { IconEye, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { CartType } from "../(pages)/product/cart/page";
+import { orderSlice } from "@/redux/slices/orderSlice";
+import { Product } from "@prisma/client";
 
 interface PropTypes {
   setCartType: Dispatch<SetStateAction<CartType>>;
@@ -30,6 +32,13 @@ export default function CartTable({ setCartType, setStepper }: PropTypes) {
   const dispatch = useDispatch();
   const { cart } = useSelector(selectCart);
   const router = useRouter();
+
+  const total = cart?.reduce(
+    (acc, cur) => acc + Number(cur.item.price) * cur.qty,
+    0
+  );
+  const grandTotal = total! + 100;
+  const totalQty = cart?.reduce((acc, curr) => acc + curr.qty, 0);
 
   const rows = cart?.map((cartItem, i) => {
     return (
@@ -110,17 +119,47 @@ export default function CartTable({ setCartType, setStepper }: PropTypes) {
         <Table.Td></Table.Td>
         <Table.Td></Table.Td>
         <Table.Td>
+          <Text size="sm" fw={500}>
+            Total
+          </Text>
+        </Table.Td>
+        <Table.Td>
+          <Text size="sm" fw={500}>
+            {total}Tk
+          </Text>
+        </Table.Td>
+      </Table.Tr>
+
+      <Table.Tr>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td>
+          <Text size="sm" fw={500}>
+            Delivery Charge
+          </Text>
+        </Table.Td>
+        <Table.Td>
+          <Text size="sm" fw={500}>
+            100TK
+          </Text>
+        </Table.Td>
+      </Table.Tr>
+
+      <Table.Tr>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td></Table.Td>
+        <Table.Td>
           <Text size="sm" fw={700}>
             Grand Total
           </Text>
         </Table.Td>
         <Table.Td>
           <Text size="sm" fw={700}>
-            {cart?.reduce(
-              (acc, cur) => acc + Number(cur.item.price) * cur.qty,
-              0
-            )}
-            TK
+            {grandTotal}Tk
           </Text>
         </Table.Td>
       </Table.Tr>
@@ -140,6 +179,14 @@ export default function CartTable({ setCartType, setStepper }: PropTypes) {
             variant="light"
             ml={10}
             onClick={() => {
+              dispatch(
+                orderSlice.actions.setProduct({
+                  product: cart as [{ item: Product; qty: number }],
+                  orderId: Math.random().toString(),
+                  deliveryCharge: 100,
+                  totalProduct: totalQty as number,
+                })
+              );
               setStepper(2), setCartType("Shipping");
             }}
           >

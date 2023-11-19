@@ -6,14 +6,8 @@ import CartTable from "@/app/components/CartTable";
 import CustomStepper from "@/app/components/Stepper";
 import ShippingAddress from "@/app/components/ShippingAddress";
 import PaymentInfo from "@/app/components/PaymentInfo";
-import OrderInfo from "@/app/components/OrderInfo";
 
-export type CartType =
-  | "Cart"
-  | "Shipping"
-  | "Payment"
-  | "Complete"
-  | "OrderInfo";
+export type CartType = "Cart" | "Shipping" | "Payment" | "Complete";
 
 const CartPage = () => {
   const [cartType, setCartType] = useState<CartType>("Cart");
@@ -42,7 +36,6 @@ const CartPage = () => {
       {cartType === "Shipping" && (
         <ShippingAddress setCartType={setCartType} setStepper={setStepper} />
       )}
-      {cartType === "OrderInfo" && <OrderInfo />}
       {cartType === "Payment" && (
         <PaymentInfo setCartType={setCartType} setStepper={setStepper} />
       )}

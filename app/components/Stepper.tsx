@@ -14,10 +14,6 @@ const CustomStepper = ({ active }: { active: number }) => {
         description="Shipping Address"
       ></Stepper.Step>
       <Stepper.Step
-        label="Forth step"
-        description="Order Information"
-      ></Stepper.Step>
-      <Stepper.Step
         label="Final Step"
         description="Payment Complete"
       ></Stepper.Step>

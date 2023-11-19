@@ -13,6 +13,9 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { CartType } from "../(pages)/product/cart/page";
+import { useDispatch, useSelector } from "@/redux/store";
+import { cartSlice, selectCart } from "@/redux/slices/cartSlice";
+import { PaymentMethod, orderSlice } from "@/redux/slices/orderSlice";
 
 interface PropTypes {
   setCartType: Dispatch<SetStateAction<CartType>>;
@@ -20,9 +23,9 @@ interface PropTypes {
 }
 
 const PaymentInfo = ({ setCartType, setStepper }: PropTypes) => {
-  const [paymentType, setPaymentType] = useState<"card" | "cashOnDelivery">(
-    "card"
-  );
+  const dispatch = useDispatch();
+  const { cart } = useSelector(selectCart);
+  const [paymentType, setPaymentType] = useState<PaymentMethod>("Card");
 
   const form = useForm({
     initialValues: {
@@ -39,7 +42,11 @@ const PaymentInfo = ({ setCartType, setStepper }: PropTypes) => {
     },
   });
 
-  console.log(paymentType);
+  const total = cart?.reduce(
+    (acc, cur) => acc + Number(cur.item.price) * cur.qty,
+    0
+  );
+  const grandTotal = total! + 100;
 
   return (
     <Container size="xs">
@@ -58,20 +65,20 @@ const PaymentInfo = ({ setCartType, setStepper }: PropTypes) => {
             label="Card Payment"
             name="paymentType"
             defaultChecked
-            onClick={() => setPaymentType("card")}
-            checked={paymentType === "card"}
+            onClick={() => setPaymentType("Card")}
+            checked={paymentType === "Card"}
           />
           <Radio
             value="cashOnDelivery"
             label="Cash On Delivery"
             name="paymentType"
-            checked={paymentType === "cashOnDelivery"}
-            onClick={() => setPaymentType("cashOnDelivery")}
+            checked={paymentType === "Cash On Delivery"}
+            onClick={() => setPaymentType("Cash On Delivery")}
           />
         </Group>
       </Radio.Group>
 
-      {paymentType === "card" ? (
+      {paymentType === "Card" ? (
         <form>
           <Grid>
             <GridCol span={12}>
@@ -216,7 +223,16 @@ const PaymentInfo = ({ setCartType, setStepper }: PropTypes) => {
           <Flex justify="flex-end" align="center">
             <Button
               onClick={() => {
+                dispatch(
+                  orderSlice.actions.setPayment({
+                    paymentMethod: paymentType,
+                    isPaid: paymentType === "Cash On Delivery" ? false : true,
+                    totalPayment: grandTotal,
+                  })
+                );
                 setCartType("Complete"), setStepper(4);
+                dispatch(orderSlice.actions.removeOrder());
+                dispatch(cartSlice.actions.removeCarts());
               }}
             >
               Order Now

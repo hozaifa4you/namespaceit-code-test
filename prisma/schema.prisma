@@ -82,20 +82,23 @@ model ShippingInfo {
   address   Address @relation(fields: [addressId], references: [id])
   userId    Int
   addressId Int
+  Order     Order[]
 }
 
 model Order {
   id             Int            @id @default(autoincrement())
   orderId        String
   slug           String
-  odrProduct     OrderProduct[]
+  orderProducts  OrderProduct[]
   totalPayment   Float
   totalProduct   Int
   deliveryCharge Float
   orderStatus    OrderStatus    @default(Processing)
+  shippingInfo   ShippingInfo   @relation(fields: [shippingInfoId], references: [id])
   user           User           @relation(fields: [userId], references: [id])
   userId         Int
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   orderProductId Int
+  shippingInfoId Int
 }
