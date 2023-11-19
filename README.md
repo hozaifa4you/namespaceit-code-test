@@ -1,5 +1,25 @@
 ## Coding Test for 'Full Stack Development' in NameSpaceIT
 
+### Screenshots
+
+#### Home Page
+![Namespace 1](https://github.com/hozaifa4you/namespaceit-code-test/assets/60110696/d8b3c7da-5fab-4934-ab4b-5a95f1082286)
+
+### Cart Preview 
+![Namespace 2](https://github.com/hozaifa4you/namespaceit-code-test/assets/60110696/67df94e7-b06e-4e29-8ff1-76240e9ab893)
+
+### Shipping Address
+![Namespace 3](https://github.com/hozaifa4you/namespaceit-code-test/assets/60110696/ff68af52-ac42-4335-a0e9-96d5895308b3)
+
+### Payment Method
+![Namespace 5](https://github.com/hozaifa4you/namespaceit-code-test/assets/60110696/91b859a1-c77e-4a3a-abfe-e6f0ebd724d1)
+
+### User All Orders
+![Namespace 6](https://github.com/hozaifa4you/namespaceit-code-test/assets/60110696/25d29f99-da9d-4ba7-9db6-46cf468e939a)
+
+
+
+
 ### Routings Frontend
 1. Home `/`
 2. Autn/Login `/auth`
