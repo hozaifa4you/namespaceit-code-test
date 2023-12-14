@@ -3,6 +3,8 @@
 #### I tried to do better in this project simple, easy, flexible, and fully functional.  I used in this project `TypeScript` `NextJs14`, `MySQL`, `Prisma`, `MantineUI`, `ReduxJS`, `@redux/toolkits`, `next-auth`, `zod`, `lodash` `cloudinary` etc.
 Hope you will accept.
 
+Video Project Review: [On Youtube](https://youtu.be/C0hy7PF01K8)]
+
 ### Screenshots
 
 #### Home Page
